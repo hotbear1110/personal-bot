@@ -2,7 +2,7 @@ import * as types from './@types/personal-bot';
 import dotenv from "dotenv";
 dotenv.config();
 import { ChatClient, PrivmsgMessage } from "@kararty/dank-twitch-irc";
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosResponse, AxiosError } from "axios";
 
 const settings: types.jsonObject = {
     username: process.env.USERNAME,
@@ -14,7 +14,7 @@ const client: ChatClient = new ChatClient(settings);
 const whitelist: string[] = ['janz11', 'karl_mn', 'woyahcoo', 'rexisus1', 'botnextdoor', 'dany411'];
 const afkcommands: string[] = ["$afk", "$gn", "$brb", "$work", "$shower", "$rafk", "$food"];
 const rainbowlist: string[] = ["%23ff0000", "%23ff6600", "%23ffa500", "%23ffff00", "%23ccff33", "%2399ff33", "%23008000", "%2300cc66", "%2300ffcc", "%233a64fa", "%235f34ff", "%23913bfa", "%23cc00cc", "%23ff0066"];
-const self: string | undefined = settings.username;
+const self: string = settings.username!;
 let isafk: boolean = false;
 let rainbow: boolean = false;
 let rainbownumber: number = 0;
@@ -40,12 +40,16 @@ async function selfCommand(msg: PrivmsgMessage) {
     }
 
     if (rainbow) {
-        await axios.put(`https://api.twitch.tv/helix/chat/color?user_id=${process.env.UID}&color=${rainbowlist[rainbownumber]}`, {}, {
-            headers: {
-						'client-id': process.env.TWITCH_USER_CLIENTID,
-						'Authorization': process.env.TWITCH_USER_AUTH
-					}
-                });
+        try {
+            await axios.put(`https://api.twitch.tv/helix/chat/color?user_id=${process.env.UID}&color=${rainbowlist[rainbownumber]}`, {}, {
+                headers: {
+                            'client-id': process.env.TWITCH_USER_CLIENTID,
+                            'Authorization': process.env.TWITCH_USER_AUTH
+                        }
+                    });
+        } catch (err: unknown) {
+            console.log(err);
+        }
     
         rainbownumber++;
         
@@ -58,8 +62,16 @@ async function selfCommand(msg: PrivmsgMessage) {
         case '!mefilesay': {
             if (!input[1]) { return; }
 
-            const apicall: AxiosResponse = await axios.get(input[1]);
-            console.log(apicall);
+            let apicall: AxiosResponse;
+            try {
+                apicall = await axios.get(input[1]);
+            } catch (err: unknown) {
+                console.log(err);
+
+                client.privmsg(input[2] ?? channel, 'FeelsDankMan Something went wrong!');
+                return;
+            }
+
             apicall.data.split("\n").forEach((line: string) => client.privmsg(input[2] ?? channel, line.replaceAll(/[\n\r]/g, ' ')));
             return;
         }
@@ -69,13 +81,19 @@ async function selfCommand(msg: PrivmsgMessage) {
             } else {
                 rainbow = false;
     
-                client.privmsg(channel, "/color #913bfa")
-                await axios.put(`https://api.twitch.tv/helix/chat/color?user_id=${process.env.UID}&color=%23913bfa`, {}, {
-					headers: {
-						'client-id': process.env.TWITCH_USER_CLIENTID,
-						'Authorization': process.env.TWITCH_USER_AUTH
-					}
-                });
+                try {
+                    await axios.put(`https://api.twitch.tv/helix/chat/color?user_id=${process.env.UID}&color=%23913bfa`, {}, {
+                        headers: {
+                            'client-id': process.env.TWITCH_USER_CLIENTID,
+                            'Authorization': process.env.TWITCH_USER_AUTH
+                        }
+                    });
+                } catch (err: unknown) {
+                    console.log(err);
+
+                    client.privmsg(input[2] ?? channel, 'FeelsDankMan Something went wrong!');
+                    return;
+                }
             }
         }
     }
@@ -87,7 +105,7 @@ const replaceRegex: RegExp = new RegExp(`${self}`, 'gi');
 function otherMessages(msg: PrivmsgMessage) {
     const channel: string = msg.channelName;
     const sender: string = msg.senderUsername;
-    const message: string = msg.messageText.replaceAll('󠀀', '');
+    const message: string = msg.messageText.replaceAll('\u{e0000}', '');
 
     if (!whitelist.includes(sender)) { return; }
 
@@ -100,9 +118,9 @@ function otherMessages(msg: PrivmsgMessage) {
 
 client.on('ready', () => console.log('Successfully connected to chat'));
 
-client.on('close', (error: Error | undefined) => {
-  if (error != null) {
-    console.error('Client closed due to error', error);
+client.on('close', (err: Error | undefined) => {
+  if (err != null) {
+    console.error('Client closed due to error', err);
   }
 });
 
