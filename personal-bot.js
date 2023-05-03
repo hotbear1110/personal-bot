@@ -104,4 +104,4 @@ client.on('close', (error) => {
 });
 
 client.connect();
-client.joinAll(['nymn', 'thotbear', '0ut3', 'atoxiv', 'nymn2', 'brian6932', 'fawcan'])
+client.joinAll(['nymn', 'thotbear', '0ut3', 'atoxiv', 'nymn2', 'brin____', 'fawcan'])
