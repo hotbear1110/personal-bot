@@ -73,28 +73,24 @@ async function selfCommand(msg) {
 					headers: {
 						'client-id': process.env.TWITCH_USER_CLIENTID,
 						'Authorization': process.env.TWITCH_USER_AUTH
-					}});
+					}
+                });
             }
         }
     }
 }
 
+const regex = new RegExp(`^(@?${self},?(\\b|\\s|$))+$`, 'i');
+const replaceRegex = new RegExp(`${self}`, 'gi');
+
 function otherMessages(msg) {
-    const input = msg.messageText.split(' ');
     const channel = msg.channelName;
     const sender = msg.senderUsername;
     const message = msg.messageText.replaceAll('󠀀', '');
 
-
     if (!whitelist.includes(sender)) { return; }
 
-    const regex = new RegExp(`^(@?${self},?(\\b|\\s|$))+$`, 'i');
-
-    console.log(message + ' - ' + regex);
-
     if (regex.test(message)) {
-        const replaceRegex = new RegExp(`${self}`, 'gi');
-
         const response = message.replaceAll(replaceRegex, sender);
 
         client.say(channel, response);
