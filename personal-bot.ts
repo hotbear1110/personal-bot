@@ -6,7 +6,8 @@ import axios, { AxiosResponse, AxiosError } from "axios";
 
 const settings: types.jsonObject = {
     username: process.env.USERNAME,
-    password: process.env.PASSWORD    
+    password: process.env.PASSWORD,
+    ignoreUnhandledPromiseRejections: true 
 }
 
 const client: ChatClient = new ChatClient(settings);

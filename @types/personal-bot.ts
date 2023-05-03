@@ -1,4 +1,5 @@
 export interface jsonObject {
     username: string | undefined,
-    password: string | undefined
+    password: string | undefined,
+    ignoreUnhandledPromiseRejections: boolean
 }
