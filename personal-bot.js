@@ -20,7 +20,7 @@ let rainbow = false;
 client.on('PRIVMSG', async (msg) => {
     if (msg.senderUsername === self) {
         await selfCommand(msg);
-    } else {
+    } else if (!isafk) {
         otherMessages(msg);
     }
   });
@@ -36,8 +36,6 @@ async function selfCommand(msg) {
     } else if (sender === self && isafk) {
         isafk = false;
     }
-
-    if (isafk) { return; }
 
     if (rainbow) {
         await axios.put(`https://api.twitch.tv/helix/chat/color?user_id=${process.env.UID}&color=${rainbowlist[rainbownumber]}`, {}, {
