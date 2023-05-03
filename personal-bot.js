@@ -9,7 +9,7 @@ const settings = {
 
 const client = new ChatClient(settings);
 
-const whitelist = ['janz11', 'karl_mn', 'woyahcoo', 'rexisus1', 'botnextdoor', 'dany411', 'botbear1110'];
+const whitelist = ['janz11', 'karl_mn', 'woyahcoo', 'rexisus1', 'botnextdoor', 'dany411'];
 const afkcommands = ["$afk", "$gn", "$brb", "$work", "$shower", "$rafk", "$food"];
 const rainbowlist = ["%23ff0000", "%23ff6600", "%23ffa500", "%23ffff00", "%23ccff33", "%2399ff33", "%23008000", "%2300cc66", "%2300ffcc", "%233a64fa", "%235f34ff", "%23913bfa", "%23cc00cc", "%23ff0066"];
 const self = settings.username;
@@ -57,7 +57,7 @@ async function selfCommand(msg) {
             if (!input[1]) { return; }
 
             const apicall = await axios.get(input[1]);
-            apicall.data.split("\n").forEach(line => client.say(input[2] ?? channel, line));
+            apicall.data.split("\n").forEach(line => client.privmsg(input[2] ?? channel, line));
             return;
         }
         case '!rainbow': {
@@ -91,7 +91,7 @@ function otherMessages(msg) {
     if (regex.test(message)) {
         const response = message.replaceAll(replaceRegex, sender);
 
-        client.say(channel, response);
+        client.privmsg(channel, response);
     }
 }
 
