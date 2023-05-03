@@ -3,5 +3,9 @@
     "@kararty/dank-twitch-irc": "^6.0.0",
     "axios": "^1.4.0",
     "dotenv": "^16.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^18.16.3",
+    "typescript": "^5.0.4"
   }
 }
