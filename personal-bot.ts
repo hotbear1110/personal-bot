@@ -13,7 +13,7 @@ const client: ChatClient = new ChatClient(settings);
 
 const whitelist: string[] = ['janz11', 'karl_mn', 'woyahcoo', 'rexisus1', 'botnextdoor', 'dany411'];
 const afkcommands: string[] = ["$afk", "$gn", "$brb", "$work", "$shower", "$rafk", "$food"];
-const rainbowlist: string[] = ["%23ff0000", "%23ff6600", "%23ffa500", "%23ffff00", "%23ccff33", "%2399ff33", "%23008000", "%2300cc66", "%2300ffcc", "%233a64fa", "%235f34ff", "%23913bfa", "%23cc00cc", "%23ff0066"];
+const rainbowlist: string[] = ["ff0000", "ff6600", "ffa500", "ffff00", "ccff33", "99ff33", "008000", "00cc66", "00ffcc", "3a64fa", "5f34ff", "913bfa", "cc00cc", "ff0066"];
 const self: string = settings.username!;
 let isafk: boolean = false;
 let rainbow: boolean = false;
@@ -41,7 +41,7 @@ async function selfCommand(msg: PrivmsgMessage) {
 
     if (rainbow) {
         try {
-            await axios.put(`https://api.twitch.tv/helix/chat/color?user_id=${process.env.UID}&color=${rainbowlist[rainbownumber]}`, {}, {
+            await axios.put(`https://api.twitch.tv/helix/chat/color?user_id=${process.env.UID}&color=%23${rainbowlist[rainbownumber]}`, {}, {
                 headers: {
                             'client-id': process.env.TWITCH_USER_CLIENTID,
                             'Authorization': process.env.TWITCH_USER_AUTH
