@@ -13,7 +13,7 @@ const settings: types.jsonObject = {
 const client: ChatClient = new ChatClient(settings);
 
 const whitelist: string[] = ['janz11', 'karl_mn', 'woyahcoo', 'rexisus1', 'botnextdoor', 'dany411'];
-const afkcommands: string[] = ["$afk", "$gn", "$brb", "$work", "$shower", "$rafk", "$food"];
+const afkcommands: string[] = ["$afk", "$gn", "$brb", "$work", "$shower", "$rafk", "$food", "$study"];
 const rainbowlist: string[] = ["ff0000", "ff6600", "ffa500", "ffff00", "ccff33", "99ff33", "008000", "00cc66", "00ffcc", "3a64fa", "5f34ff", "913bfa", "cc00cc", "ff0066"];
 const self: string = settings.username!;
 let isafk: boolean = false;
@@ -36,7 +36,7 @@ async function selfCommand(msg: PrivmsgMessage) {
 
     if (afkcommands.includes(input[0].toLowerCase())) {
         isafk = true;
-    } else if (sender === self && isafk) {
+    } else if (isafk) {
         isafk = false;
     }
 
